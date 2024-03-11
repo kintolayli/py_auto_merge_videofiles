@@ -1,37 +1,49 @@
+import glob
 import os.path
-from os import listdir
+import subprocess
+
 from os.path import isfile, join
 
-print(
-    "Введите путь до папки, где находятся файлы, которые необходимо "
-    "объединить:\n")
-while True:
-    path = input()
-    if len(path) > 0:
-        break
-    print("Вы ничего не ввели, попробуйте еще раз.")
 
-extensions_dict = {
-    '1': '.webm',
-    '2': '.mp4'
-}
-print("Введите расширение файла(ов), которые будут объединяться (1 - '.webm', "
-      "2 - '.mp4', либо введите вручную в формате '.<расширение>':\n")
-ext_input = input()
-files_extension = extensions_dict.get(ext_input)
-if not files_extension:
-    files_extension = ext_input
+def convert_video(input_files_path, output_files_path):
+    command = [
+        "ffmpeg",
+        "-f",
+        "concat",
+        "-safe",
+        "0",
+        "-i",
+        input_files_path,
+        "-c",
+        "copy",
+        output_files_path
+    ]
+    process = subprocess.Popen(command)
+    process.wait()
 
-filenames = [f"file '{f}'\n" for f in listdir(path) if isfile(join(path, f))
+
+files_extension = '.webm'
+
+path = r'C:\Users\golki\OneDrive\Desktop\test'
+path_with_ext = os.path.join(path, '*.webm')
+
+files = sorted(glob.glob(path_with_ext))
+filenames = [f"file '{f}'\n" for f in files if isfile(join(path_with_ext, f))
              and f.endswith(files_extension)]
 files_amount = len(filenames)
+
+input_dir_name = "output"
+input_dir_path = os.path.join(path, input_dir_name)
+if not os.path.exists(input_dir_path):
+    os.makedirs(input_dir_path)
 
 print(f"Найден(о) {files_amount} файл(ов)")
 
 if files_amount > 0:
     input_files_path = os.path.join(path, 'list.txt')
-    output_filename = f"{filenames[0].split('.')[0][6:-7:]}_output{files_extension}"
-    output_files_path = os.path.join(path, output_filename)
+    # output_filename = f"{filenames[0].split('.')[0][6:-7:]}_output{files_extension}"
+
+    output_files_path = os.path.join(input_dir_path, "output.webm")
 
     with open(input_files_path, 'w', encoding='utf-8') as f:
         f.writelines(filenames)
@@ -39,9 +51,6 @@ if files_amount > 0:
     print(input_files_path)
     print(output_files_path)
 
-    command = f'ffmpeg -safe 0 -f concat -i "{input_files_path}" -c copy "{output_files_path}"'
-    print(command)
-
-    os.system(command)
+    convert_video(input_files_path, output_files_path)
 
 print("Обработка завершена.")
