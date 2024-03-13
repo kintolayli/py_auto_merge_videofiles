@@ -91,7 +91,8 @@ class MyHandler(FileSystemEventHandler):
                         if files_amount > 0:
                             input_files_path = os.path.join(folder_to_watch,
                                                             'list.txt')
-                            output_filename = f"{files[0].split('.')[0].split('_compressed')[0]}{file_extension}"
+                            # output_filename = f"{files[0].split('.')[0].split('_compressed')[0]}{file_extension}"
+                            output_filename = f"{files[0].split('.')[0].split('_compressed')[0]}_merged{file_extension}"
                             output_files_path = os.path.join(event.src_path,
                                                              output_filename)
 
