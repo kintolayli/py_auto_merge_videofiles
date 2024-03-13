@@ -92,8 +92,14 @@ class MyHandler(FileSystemEventHandler):
                             input_files_path = os.path.join(folder_to_watch,
                                                             'list.txt')
                             # output_filename = f"{files[0].split('.')[0].split('_compressed')[0]}{file_extension}"
-                            output_filename = f"{files[0].split('.')[0].split('_compressed')[0]}_merged{file_extension}"
-                            output_files_path = os.path.join(event.src_path,
+                            # output_filename = f"{files[0].split('.')[0].split('_compressed')[0]}_merged{file_extension}"
+                            output_filename = f"{files[0].split('.')[0]}_merged{file_extension}".split("\\")[-1]
+
+                            new_filepath_folder = os.path.join(folder_to_watch, "merged_video_output")
+                            if not os.path.exists(new_filepath_folder):
+                                os.makedirs(new_filepath_folder)
+
+                            output_files_path = os.path.join(new_filepath_folder,
                                                              output_filename)
 
                             with open(input_files_path, 'w',
